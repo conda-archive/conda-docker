@@ -6,7 +6,7 @@ RUN yum -y update \
     && curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
     && bash /tmp/miniconda.sh -bfp /usr/local/ \
     && rm -rf /tmp/miniconda.sh \
-    && conda install -y python=3 conda=4.3.14 \
+    && conda install -y python=3 conda=4.3.21 \
     && conda clean --all --yes \
     && rpm --erase --nodeps curl bzip2 \
     && conda clean --all --yes \

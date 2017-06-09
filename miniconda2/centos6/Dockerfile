@@ -10,7 +10,7 @@ RUN yum -y update \
     && ln -s ../envs/_conda_/bin/activate ../envs/_conda_/bin/conda ../envs/_conda_/bin/conda-env ../envs/_conda_/bin/deactivate . \
     && mkdir -p /usr/local/conda-meta \
     && touch /usr/local/conda-meta/history \
-    && conda install -y python=2 conda=4.3.14 \
+    && conda install -y python=2 conda=4.3.21 \
     && conda clean --all --yes \
     && rpm --erase --nodeps curl bzip2 \
     && yum clean all
