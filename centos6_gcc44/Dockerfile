@@ -1,8 +1,6 @@
 FROM centos:centos6
 MAINTAINER Continuum Analytics, Inc. <conda@continuum.io>
 
-ENV container docker
-
 RUN yum -y update; yum clean all \
 
     && yum install -y   glibc-devel patch \
