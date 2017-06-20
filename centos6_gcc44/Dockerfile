@@ -2,13 +2,26 @@ FROM centos:centos6
 MAINTAINER Continuum Analytics, Inc. <conda@continuum.io>
 
 ENV container docker
-WORKDIR /build_scripts
-COPY install_yum_deps.sh symlink_libraries.sh /build_scripts/
+
 RUN yum -y update; yum clean all \
-    && bash install_yum_deps.sh \
-    && bash symlink_libraries.sh \
-    && yum clean all \
-    && rm -rf /build_scripts
+
+    && yum install -y   glibc-devel patch \
+        unzip bison yasm file make  \
+        ison byacc cscope ctags cvs diffstat doxygen flex gettext \
+        indent intltool libtool curl bzip2 wget swig systemtap \
+        patch patchutils rcs redhat-rpm-config rpm-build subversion \
+        centos-release-SCL tar.x86_64 unzip \
+        emacs vim-enhanced nano \
+
+    && yum install -y  gcc44 gcc44-c++ gcc44-gfortran mesa-libGL-devel \
+                     mesa-libGLU-devel libX11-devel libXt-devel \
+                     libXrender-devel libXext-devel libXdmcp-devel \
+                     java-1.7.0-openjdk java-1.7.0-openjdk-devel libgcj
+
+RUN ln -s /usr/bin/gcc44 /usr/local/bin/gcc \
+    && ln -s /usr/bin/g++44 /usr/local/bin/g++ \
+    && ln -s /usr/bin/gfortran44 /usr/local/bin/gfortran
+
 
 RUN curl -sS https://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz -o /tmp/binutils.tar.gz \
     && cd /tmp \
@@ -35,4 +48,4 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda2-4.3.11-Linux-x86
 ENV PATH /opt/conda/bin:$PATH
 
 RUN conda install -y git conda-build \
-            anaconda-verify constructor libconda
+            anaconda-verify constructor libconda anaconda-client
