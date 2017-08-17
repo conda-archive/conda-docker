@@ -11,10 +11,11 @@ if ! [ -x "$(command -v mock)" ]; then
   exit 1
 fi
 
-name="centos6_32"
+name="centos6-32-minimal-base"
 currdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 target="$currdir/$name"
 config="$currdir/centos-6-i386.cfg"
+registry="conda"
 
 # Simplified version of https://github.com/moby/moby/blob/master/contrib/mkimage-yum.sh
 
@@ -69,8 +70,8 @@ if [ -z "$version" ]; then
     version=$name
 fi
 
-tar --numeric-owner -c -C "$target" . | docker import - $name:$version
+tar --numeric-owner -c -C "$target" . | docker import - "$registry/$name:$version"
 
-docker run -i -t --rm $name:$version /bin/bash -c 'echo success'
+docker run -i -t --rm "$registry/$name:$version" /bin/bash -c 'echo success'
 
 rm -rf "$target"
