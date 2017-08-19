@@ -55,6 +55,11 @@ chrootcmd 'rm -rf /sbin/sln'
 #  ldconfig
 chrootcmd 'rm -rf /etc/ld.so.cache /var/cache/ldconfig'
 chrootcmd 'mkdir -p --mode=0755 /var/cache/ldconfig'
+#  bring back the default yum config
+chrootcmd 'mv /etc/yum.conf.rpmnew /etc/yum.conf'
+#  this should be the last chroot command since
+#  each invocation of mock creates this file
+chrootcmd 'rm -f /etc/yum/yum.conf'
 
 version=
 for file in "$target"/etc/{redhat,system}-release
