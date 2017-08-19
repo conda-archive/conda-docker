@@ -3,11 +3,16 @@ set -euxo pipefail
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
-  exit
+  exit 1
 fi
 
 if ! [ -x "$(command -v mock)" ]; then
-  echo 'Error: mock is not installed.' >&2
+  echo 'error: mock is not installed.' >&2
+  exit 1
+fi
+
+if ! [ -x "$(command -v docker)" ]; then
+  echo 'error: docker is not installed.' >&2
   exit 1
 fi
 
@@ -21,10 +26,11 @@ registry="conda"
 
 mock --init -v -r centos-6-i386.cfg --rootdir="$target"
 
-# amazon linux yum will fail without vars set
+# make yum vars explicit
 if [ -d /etc/yum/vars ]; then
    mkdir -p -m 755 "$target"/etc/yum
-   cp -a /etc/yum/vars "$target"/etc/yum/
+   echo "i686" > "$target"/etc/yum/vars/arch
+   echo "i386" > "$target"/etc/yum/vars/basearch
 fi
 
 cat > "$target"/etc/sysconfig/network <<EOF
@@ -75,8 +81,11 @@ if [ -z "$version" ]; then
     version=$name
 fi
 
-tar --numeric-owner -c -C "$target" . | docker import - "$registry/$name:$version"
+tar --numeric-owner -cf "${currdir}/${name}.tar" -C "$target" .
+
+docker build -t "$registry/$name:$version" $currdir
 
 docker run -i -t --rm "$registry/$name:$version" /bin/bash -c 'echo success'
 
+rm -f "${currdir}/${name}.tar"
 rm -rf "$target"
