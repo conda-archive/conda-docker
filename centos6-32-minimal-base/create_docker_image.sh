@@ -46,7 +46,7 @@ chrootcmd 'rpm --rebuilddb &> /dev/null'
 chrootcmd 'yum -y clean all'
 # effectively: febootstrap-minimize --keep-zoneinfo --keep-rpmdb --keep-services "$target"
 #  locales
-chrootcmd 'rm -rf /usr/{{lib,share}/locale,{lib,lib64}/gconv,bin/localedef,sbin/build-locale-archive}'
+# chrootcmd 'rm -rf /usr/{{lib,share}/locale,{lib,lib64}/gconv,bin/localedef,sbin/build-locale-archive}'
 #  docs and man pages
 chrootcmd 'rm -rf /usr/share/{man,doc,info,gnome/help}'
 #  cracklib
