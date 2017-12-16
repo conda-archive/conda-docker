@@ -7,7 +7,7 @@ MAINTAINER Conda Development Team <conda@continuum.io>
 # NOTE: sudo is used in this Dockerfile because the circleci images default user is NOT root
 
 RUN sudo apt-get -qq update && sudo apt-get -qq -y install \
-        vim zsh dash \
+        vim zsh dash csh tcsh posh ksh fish \
     && sudo apt-get install patch libmagic1 \
     && sudo rm -rf /var/lib/apt/lists/* /var/log/dpkg.log
 # autoclean patch libmagic1 are needed for conda-build tests to pass
@@ -21,8 +21,9 @@ RUN curl -L https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.s
     && sudo /opt/conda/bin/conda install -y \
         python=$PYTHON_VERSION pycosat conda requests ruamel_yaml \
         anaconda-client nbformat \
-        pytest pytest-cov pytest-timeout mock responses pexpect \
+        pytest pytest-cov pytest-timeout mock responses pexpect xonsh \
         flake8 \
+        -c defaults -c conda-forge \
     && sudo /opt/conda/bin/conda clean --all --yes
 
 RUN sudo /opt/conda/bin/pip install codecov radon \

@@ -7,7 +7,7 @@ MAINTAINER Conda Development Team <conda@continuum.io>
 # NOTE: sudo is used in this Dockerfile because the circleci images default user is NOT root
 
 RUN sudo apt-get -qq update && sudo apt-get -qq -y install \
-        vim zsh dash \
+        vim zsh dash csh tcsh posh ksh fish \
     && sudo apt-get autoclean patch libmagic1 \
     && sudo rm -rf /var/lib/apt/lists/* /var/log/dpkg.log
 # autoclean patch libmagic1 are needed for conda-build tests to pass
@@ -33,7 +33,7 @@ RUN sudo /opt/conda/bin/pip install codecov radon \
 RUN sudo /opt/conda/bin/conda install -y -c defaults -c conda-forge \
         conda-build patch git \
         perl pytest-xdist pytest-catchlog pytest-mock \
-        anaconda-client numpy \
+        anaconda-client \
         filelock jinja2 conda-verify pkginfo \
         glob2 beautifulsoup4 chardet pycrypto \
     && sudo /opt/conda/bin/conda clean --all --yes
