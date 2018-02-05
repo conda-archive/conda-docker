@@ -1,5 +1,6 @@
 FROM centos:centos6
 MAINTAINER Continuum Analytics, Inc. <conda@continuum.io>
+ARG CONDA_VERSION=4.3.11
 
 RUN yum -y update; yum clean all \
 
@@ -38,7 +39,7 @@ RUN wget --quiet http://mirror.ox.ac.uk/sites/ctan.org/systems/texlive/tlnet/ins
     && TEXLIVE_INSTALL_PREFIX=/opt/texlive ./install-tl \
     && rm -rf /temp
 
-RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda2-4.3.11-Linux-x86_64.sh -O ~/miniconda.sh \
+RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda2-${CONDA_VERSION}-Linux-x86_64.sh -O ~/miniconda.sh \
     && /bin/bash ~/miniconda.sh -b -p /opt/conda \
     && rm ~/miniconda.sh
 
