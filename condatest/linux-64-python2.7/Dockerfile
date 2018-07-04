@@ -2,6 +2,7 @@ FROM circleci/golang
 MAINTAINER Conda Development Team <conda@continuum.io>
 
 #  $ docker build . -t condatest/linux-64-python-2.7:latest
+#  $ docker run --rm -it condatest/linux-64-python-2.7 /bin/bash
 #  $ docker push condatest/linux-64-python-2.7
 
 # NOTE: sudo is used in this Dockerfile because the circleci images default user is NOT root
@@ -18,12 +19,12 @@ ENV PYTHON_VERSION 2.7
 RUN curl -L https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
     && sudo bash /tmp/miniconda.sh -bfp /opt/conda/ \
     && rm -rf /tmp/miniconda.sh \
-    && sudo /opt/conda/bin/conda install -y \
-        python=$PYTHON_VERSION pycosat conda requests ruamel_yaml \
-        enum34 futures \
+    && sudo /opt/conda/bin/conda install -y -c defaults -c conda-forge \
+        python=$PYTHON_VERSION pycosat conda requests conda-canary::ruamel_yaml \
         anaconda-client nbformat \
         pytest pytest-cov pytest-timeout mock responses pexpect \
         flake8 \
+        enum34 futures \
     && sudo /opt/conda/bin/conda clean --all --yes
 
 RUN sudo /opt/conda/bin/pip install codecov radon \
