@@ -22,7 +22,7 @@ RUN curl -L https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.s
     && sudo bash /tmp/miniconda.sh -bfp /opt/conda/ \
     && rm -rf /tmp/miniconda.sh \
     && sudo /opt/conda/bin/conda install -y -c conda-canary -c defaults -c conda-forge \
-        conda \
+        conda conda-package-handling \
         python=$PYTHON_VERSION pycosat requests ruamel_yaml cytoolz \
         anaconda-client nbformat \
         pytest pytest-cov pytest-timeout mock responses pexpect \
