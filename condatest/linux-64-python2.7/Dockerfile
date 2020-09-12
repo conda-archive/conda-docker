@@ -7,6 +7,9 @@ ENV PYTHON_VERSION 2.7
 
 RUN useradd -ms /bin/bash test_user
 
+RUN usermod -u 1001 test_user
+RUN groupmod -g 1001 test_user
+
 RUN apt-get update --fix-missing && \
     apt-get install -y wget build-essential bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion sudo && \
     apt-get clean
