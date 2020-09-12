@@ -44,4 +44,4 @@ RUN sudo /opt/conda/bin/conda install -y -c conda-canary -c defaults \
 
 USER test_user
 
-CMD [ "/bin/bash" ]
+ENTRYPOINT [ "/bin/bash" ]

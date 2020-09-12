@@ -43,4 +43,4 @@ RUN sudo /opt/conda/bin/conda install -y -c defaults -c conda-forge \
 
 USER test_user
 
-CMD [ "/bin/bash" ]
+ENTRYPOINT [ "/bin/bash" ]
