@@ -1,43 +1,44 @@
-FROM circleci/golang
-MAINTAINER Conda Development Team <conda@continuum.io>
+FROM debian:buster-slim
 
-#  $ docker build . -t condatest/linux-64-python-2.7:latest
-#  $ docker run --rm -it condatest/linux-64-python-2.7:latest /opt/conda/bin/conda info
-#  $ docker run --rm -it condatest/linux-64-python-2.7:latest /opt/conda/bin/conda list
-#  $ docker run --rm -it condatest/linux-64-python-2.7:latest /bin/bash
-#  $ docker push condatest/linux-64-python-2.7
-
-# NOTE: sudo is used in this Dockerfile because the circleci images default user is NOT root
-
-RUN sudo apt-get -qq update && sudo apt-get -qq -y install \
-        vim zsh dash csh tcsh posh ksh fish \
-    && sudo apt-get autoclean patch libmagic1 \
-    && sudo rm -rf /var/lib/apt/lists/* /var/log/dpkg.log
-# autoclean patch libmagic1 are needed for conda-build tests to pass
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH /opt/conda/bin:$PATH
 
 ENV PYTHON_VERSION 2.7
 
-# conda and test dependencies
-RUN curl -L https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
-    && sudo bash /tmp/miniconda.sh -bfp /opt/conda/ \
-    && rm -rf /tmp/miniconda.sh \
-    && sudo /opt/conda/bin/conda install -y -c conda-canary -c defaults -c conda-forge \
-        conda conda-package-handling \
-        python=$PYTHON_VERSION pycosat requests ruamel_yaml cytoolz \
-        anaconda-client nbformat \
-        pytest pytest-cov pytest-timeout mock responses pexpect \
-        flake8 \
-        enum34 futures \
-    && sudo /opt/conda/bin/conda clean --all --yes
+RUN useradd -ms /bin/bash test_user
 
-RUN sudo /opt/conda/bin/pip install codecov radon \
-    && sudo rm -rf ~root/.cache/pip
+RUN apt-get update --fix-missing && \
+    apt-get install -y wget build-essential bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion sudo && \
+    apt-get clean
+
+RUN echo "test_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh && \
+    /opt/conda/bin/conda clean -tipsy
+
+# conda and test dependencies
+RUN /opt/conda/bin/conda install -y -c conda-canary -c defaults \
+    conda conda-package-handling \
+    python=$PYTHON_VERSION pycosat requests ruamel_yaml cytoolz \
+    anaconda-client nbformat make \
+    pytest pytest-cov pytest-timeout mock responses pexpect \
+    flake8 enum34 futures && \
+    /opt/conda/bin/conda clean --all --yes
+
+RUN /opt/conda/bin/pip install codecov radon \
+  && rm -rf ~root/.cache/pip
 
 # conda-build and test dependencies
-RUN sudo /opt/conda/bin/conda install -y -c defaults -c conda-forge \
+RUN sudo /opt/conda/bin/conda install -y -c conda-canary -c defaults \
         conda-build patch git \
-        perl pytest-xdist pytest-catchlog pytest-mock \
+        perl pytest-xdist pytest-mock \
         anaconda-client \
         filelock jinja2 conda-verify pkginfo \
         glob2 beautifulsoup4 chardet pycrypto \
     && sudo /opt/conda/bin/conda clean --all --yes
+
+USER test_user
+
+CMD [ "/bin/bash" ]
