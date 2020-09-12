@@ -1,0 +1,34 @@
+name: Build and Publish Conda CI Images
+on:
+  #schedule:
+  #  - cron: '0 10 * * *' # everyday at 10am
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: build-push linux-ci
+        uses: docker/build-push-action@v1
+        with:
+          context: ./condatest/linux-64-python3.7
+          file: ./Dockerfile
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: angloyna/linux-64-python3.7
+          tags: ghaction
+      - name: build-push linux-ci
+        uses: docker/build-push-action@v1
+        with:
+          context: ./condatest/linux-64-python2.7
+          file: ./Dockerfile
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: angloyna/linux-64-python2.7
+          tags: ghaction
