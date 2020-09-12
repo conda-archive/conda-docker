@@ -1,8 +1,5 @@
 name: Build and Publish Conda CI Images
-on:
-  #schedule:
-  #  - cron: '0 10 * * *' # everyday at 10am
-  push:
+on: [push, pull_request]
 
 jobs:
   build:
